@@ -33,22 +33,36 @@ public class UnitTestAnalyzer
     {
         var agentTranslator = new ChatCompletionAgent()
         {
-            Instructions = """
-                           你是一位专业的代码分析专家，擅长分析C#类文件。你需要：
-                           1. 详细分析提供的C#类文件
-                           2. 识别所有公共方法、属性及其签名
-                           3. 确定类的依赖关系和注入的服务
-                           4. 识别类的主要功能和职责
-                           5. 分析每个方法的输入参数和返回值类型
-                           6. 忽略掉依赖注入的服务和实体（IADOConfigurable,ILoggingLogger 直接略过）
-                           7. 找到当前类的入口方法，
+            Instructions = """"
+                           你是一位专业的代码分析专家，擅长分析基于SqlActionBase框架的C#类文件。你需要：
                            
-                           以结构化方式呈现分析结果，使其他Agent能够理解类的功能和测试需求。
-                           """,
+                           1. 首先识别并重点分析类中的RunSqlDataOperation或者RunDataOperateAsync方法，这是框架中的主要入口点
+                              - 详细分析其参数类型和返回值类型
+                              - 识别它调用的所有辅助方法和依赖的数据
+                              - 分析其执行流程和主要逻辑分支
+                           
+                           2. 仅分析与RunSqlDataOperation直接相关的私有方法
+                              - 特别关注提供SQL语句的方法
+                              - 特别关注提供SQL参数的方法
+                           
+                           3. 简要分析类的继承结构和泛型参数
+                              - 确定入参和返回值的类型
+                              - 理解数据实体的结构和属性
+                           
+                           4. 忽略依赖注入的服务和实体（IADOConfigurable, ILoggingLogger）
+                           
+                           5. 明确识别以下测试所需的关键信息：
+                              - RunSqlDataOperation方法的完整签名
+                              - 返回数据的准确类型和结构
+                              - SQL查询获取的数据字段和表
+                              - 必要的参数值和常量
+                           
+                           请以结构化格式提供分析结果，重点突出如何有效测试RunSqlDataOperation方法。
+                           """",
             Name = "CodeAnalyzer",
             Arguments = new KernelArguments(new PromptExecutionSettings()
             {
-                ServiceId = "deepseek",
+                ServiceId = "openai-gpt4o",
                 FunctionChoiceBehavior = FunctionChoiceBehavior.Required(),
             }),
             Kernel = kernel,
@@ -62,9 +76,9 @@ public class UnitTestAnalyzer
         {
             Instructions = """
                            你是一位单元测试设计专家，根据CodeAnalyzer提供的分析结果，你需要：
-                           1. 为每个公共方法设计测试策略
+                           1. 为入口方法设计测试策略
                            2. 确定需要测试的正常路径场景
-                           3. 确定需要测试的边界条件和异常路径
+                           3. 确定需要测试的边界条件和异常路径(忽略SQL错误或数据库连接失败情况)
                            4. 规划需要测试的典型输入组合
                            5. 确定需要验证的预期输出和状态
                            6. 涉及到依赖注入的服务，不需要设计相应的模拟对象
@@ -185,7 +199,7 @@ public class UnitTestAnalyzer
                            
                            namespace RSP.PricingTracking.UnitTest.ActionTest.Agent;
                            
-                           public class [ActionName]Test: ActionTestBase
+                           public class [TestedClassName]Test: ActionTestBase
                            {
                                [Test]
                                [TestCaseSource(nameof(GetTestCases))]
@@ -221,7 +235,7 @@ public class UnitTestAnalyzer
                            ```
 
                            输出格式必须严格按照以下格式：
-                           ## 文件名：[TestedClassName]Tests.cs
+                           ## 文件名：[TestedClassName]Test.cs
 
                            ```csharp
                            // 完整的测试类代码
