@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rsp.unitTest.agent", "rsp.unitTest.agent\rsp.unitTest.agent.csproj", "{A1688F85-9BB9-42B0-8E18-42D5F153117A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A1688F85-9BB9-42B0-8E18-42D5F153117A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1688F85-9BB9-42B0-8E18-42D5F153117A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1688F85-9BB9-42B0-8E18-42D5F153117A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1688F85-9BB9-42B0-8E18-42D5F153117A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
