@@ -8,9 +8,9 @@ namespace rsp.unitTest.agent.Analyzer;
 
 public class UnitTestAnalyzer
 {
-    public async Task<AgentGroupChat> GetUnitTestGroupChat(Kernel kernel)
+    public async Task<AgentGroupChat> GetUnitTestGroupChat(Kernel kernel,string code)
     {
-        var codeAnalyzerAsync = await CodeAnalyzerAsync(kernel);
+        var codeAnalyzerAsync = await CodeAnalyzerAsync(kernel,code);
         var testDesignerAsync = await TestDesignerAsync(kernel);
         var dataGeneratorAsync = await DataGeneratorAsync(kernel);
         var testWriterAsync = await TestWriterAsync(kernel);
@@ -29,12 +29,15 @@ public class UnitTestAnalyzer
         };
     }
 
-    private async Task<ChatCompletionAgent> CodeAnalyzerAsync(Kernel kernel)
+    private async Task<ChatCompletionAgent> CodeAnalyzerAsync(Kernel kernel,string code)
     {
         var agentTranslator = new ChatCompletionAgent()
         {
-            Instructions = """"
-                           你是一位专业的代码分析专家，擅长分析基于SqlActionBase框架的C#类文件。你需要：
+            Instructions = $"""
+                           你是一位专业的10+ 年经验的.net代码分析专家，擅长分析基于C#类文件。你需要根据以下的方法Action,入参Dto, 返回值VO进行分析：
+                           {
+                               code
+                           }
                            
                            1. 首先识别并重点分析类中的RunSqlDataOperation或者RunDataOperateAsync方法，这是框架中的主要入口点
                               - 详细分析其参数类型和返回值类型
@@ -56,9 +59,10 @@ public class UnitTestAnalyzer
                               - 返回数据的准确类型和结构
                               - SQL查询获取的数据字段和表
                               - 必要的参数值和常量
+                           6. 忽略SQL错误或数据库连接失败的情况，以及其他不相关的异常处理逻辑
                            
                            请以结构化格式提供分析结果，重点突出如何有效测试RunSqlDataOperation方法。
-                           """",
+                           """,
             Name = "CodeAnalyzer",
             Arguments = new KernelArguments(new PromptExecutionSettings()
             {
@@ -289,7 +293,7 @@ public class UnitTestAnalyzer
         return agentTranslator;
     }
 
-    public async Task SaveGeneratedJsonDataAsync(string content)
+    public async Task<string> SaveGeneratedJsonDataAsync(string content)
     {
         try
         {
@@ -298,17 +302,19 @@ public class UnitTestAnalyzer
             if (!jsonMatch.Success)
             {
                 Console.WriteLine("\n无法从输出中提取JSON数据。");
-                return;
+                return "";
             }
         
             string jsonContent = jsonMatch.Groups[1].Value;
-        
+
+            return jsonContent;
+            
             // Extract the action name
             var actionNameMatch = Regex.Match(content, @"##ActionName:(\w+)##");
             if (!actionNameMatch.Success)
             {
                 Console.WriteLine("\n无法从输出中识别Action名称。");
-                return;
+                return "";
             }
         
             string actionName = actionNameMatch.Groups[1].Value;
@@ -334,10 +340,12 @@ public class UnitTestAnalyzer
         {
             Console.WriteLine($"\n保存测试数据时出错：{ex.Message}");
         }
+
+        return "";
     }
     
     // 添加此方法用于保存文件
-    public async Task SaveGeneratedTestFileAsync(string content)
+    public async Task<string> SaveGeneratedTestFileAsync(string content)
     {
         try
         {
@@ -346,7 +354,7 @@ public class UnitTestAnalyzer
             if (!fileNameMatch.Success)
             {
                 Console.WriteLine("\n无法从输出中识别文件名。");
-                return;
+                return "";
             }
 
             string fileName = fileNameMatch.Groups[1].Value;
@@ -356,11 +364,14 @@ public class UnitTestAnalyzer
             if (!codeMatch.Success)
             {
                 Console.WriteLine("\n无法从输出中提取代码块。");
-                return;
+                return "";
             }
 
             string code = codeMatch.Groups[1].Value;
 
+            
+            return code;
+            
             // 获取测试项目路径
             string testsDir = "F:\\code\\Austin\\rsp.unitTest.agent\\rsp.unitTest.agent\\ActionTest";
 
@@ -380,5 +391,7 @@ public class UnitTestAnalyzer
         {
             Console.WriteLine($"\n保存测试文件时出错：{ex.Message}");
         }
+
+        return "";
     }
 }

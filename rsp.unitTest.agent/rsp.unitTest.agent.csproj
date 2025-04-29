@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
@@ -11,6 +11,9 @@
         <PackageReference Include="Microsoft.SemanticKernel" Version="1.47.0" />
         <PackageReference Include="Microsoft.SemanticKernel.Agents.Core" Version="1.47.0" />
         <PackageReference Include="Microsoft.SemanticKernel.Agents.OpenAI" Version="1.47.0-preview" />
+        <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="8.1.1" />
+        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="8.1.1" />
+        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="8.1.1" />
     </ItemGroup>
 
     <ItemGroup>
