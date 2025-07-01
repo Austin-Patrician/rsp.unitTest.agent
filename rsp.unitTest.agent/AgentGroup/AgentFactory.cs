@@ -86,9 +86,9 @@ public static class AgentFactory
             Name = "DispatcherAgent",
             Arguments = new KernelArguments(new OpenAIPromptExecutionSettings()
             {
-                ServiceId = "openai-gpt-3.5-turbo",
+                ServiceId = "openai-gpt4o",
                 Temperature = 0.5f,
-                MaxTokens = 2000
+                MaxTokens = 4000
             }),
             Kernel = kernel,
         };
@@ -170,7 +170,7 @@ public static class AgentFactory
             {
                 ServiceId = "openai-gpt4o",
                 Temperature = 0.7f,
-                MaxTokens = 4000
+                MaxTokens = 8000
             }),
             Kernel = kernel,
         };
@@ -235,7 +235,7 @@ public static class AgentFactory
             {
                 ServiceId = "openai-gpt4o",
                 Temperature = 0.4f,
-                MaxTokens = 2000
+                MaxTokens = 3000
             }),
             Kernel = kernel,
         };

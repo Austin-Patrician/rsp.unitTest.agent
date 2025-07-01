@@ -42,7 +42,11 @@ public class ArticleRewriter
         Console.WriteLine("🔍 开始质量审核和文本合并...");
         var finalArticle = await MergeAndQualityCheck(rewrittenBlocks, agentTeam);
         
-        // 5. 最终质量报告
+        // 5. 保存重写结果到文件
+        Console.WriteLine("💾 保存重写结果到文件...");
+        await SaveArticleToFile(finalArticle);
+        
+        // 6. 最终质量报告
         //await GenerateQualityReport(originalArticle, finalArticle, agentTeam.QaAgent);
         
         Console.WriteLine("🎉 文章重写流程完成!");
@@ -401,6 +405,23 @@ public class ArticleRewriter
             }
         };
     }
+
+    /// <summary>
+    /// 保存重写后的文章到文本文件
+    /// </summary>
+    private async Task SaveArticleToFile(string articleContent)
+    {
+        try
+        {
+            var filePath = $"RewrittenArticle_{DateTime.Now:yyyyMMdd_HHmmss}.txt";
+            await File.WriteAllTextAsync(filePath, articleContent);
+            Console.WriteLine($"📂 文章已保存到文件: {filePath}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"⚠️ 保存文章时出错: {ex.Message}");
+        }
+    }
 }
 
 /// <summary>
@@ -415,4 +436,3 @@ public class AgentTeam
     public ChatCompletionAgent QaAgent { get; set; } = null!;
     public List<ChatCompletionAgent> RewriterAgents { get; set; } = new();
 }
-
