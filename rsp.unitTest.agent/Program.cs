@@ -12,7 +12,7 @@ Console.OutputEncoding = Encoding.UTF8;
 Console.InputEncoding = Encoding.UTF8;
 
 const string modelId = "gpt-4.1";
-const string openAiKey = "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";
+const string openAiKey = "";
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseUrls("http://0.0.0.0:5002");
