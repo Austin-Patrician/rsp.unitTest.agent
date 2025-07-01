@@ -11,8 +11,8 @@ using rsp.unitTest.agent.Tools;
 Console.OutputEncoding = Encoding.UTF8;
 Console.InputEncoding = Encoding.UTF8;
 
-const string modelId = "gpt-4o";
-const string openAiKey = "";
+const string modelId = "gpt-4.1";
+const string openAiKey = "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";
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseUrls("http://0.0.0.0:5002");
@@ -44,6 +44,7 @@ builder.Services.AddSingleton(sp => Kernel.CreateBuilder()
 
 // Register ArticleRewriter as a service
 builder.Services.AddSingleton<ArticleRewriter>();
+builder.Services.AddSingleton<FictionRewriter>();
 
 var app = builder.Build();
 
@@ -149,6 +150,32 @@ app.MapGet("/demo-rewrite", async (ArticleRewriter rewriter) =>
         demo = true
     });
 });
+
+// 添加文章重写示例演示
+app.MapGet("/demo-fiction-rewrite", async (FictionRewriter rewriter) =>
+{
+
+    var path = "/Users/aa123456/Library/Containers/com.tencent.xinWeChat/Data/Library/Application Support/com.tencent.xinWeChat/2.0b4.0.9/e52617958522b4718b1b78605719079f/Message/MessageTemp/6f238fabd93eb1fe1d59c694a957feb0/File/他陪小三一夜后回家，爷爷掏出离婚证：你和娃她都不要了，满意了.docx";
+    
+    if (!File.Exists(path))
+    {
+        return Results.NotFound("演示文章文件不存在，请检查路径");
+    }
+    var sampleArticle = WordParser.ReadWordFileContent(path);
+
+    Console.WriteLine("🚀 开始演示文章重写...");
+    var result = await rewriter.RewriteFictionAsync(sampleArticle);
+    
+    return Results.Ok(new
+    {
+        originalArticle = sampleArticle,
+        rewrittenArticle = result,
+        originalLength = sampleArticle.Length,
+        rewrittenLength = result.Length,
+        demo = true
+    });
+});
+
 
 Console.WriteLine("🔥 文章重写服务已启动!");
 Console.WriteLine("📍 API端点:");

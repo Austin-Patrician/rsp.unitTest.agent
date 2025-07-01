@@ -185,29 +185,3 @@ public static class TextProcessor
         return totalWords > 0 ? (double)commonWords / totalWords : 0;
     }
 }
-
-/// <summary>
-/// 文本块结构
-/// </summary>
-public class TextBlock
-{
-    public int Index { get; set; }
-    public string Content { get; set; } = "";
-    public string Summary { get; set; } = "";
-    public string Keywords { get; set; } = "";
-    public string PreviousContext { get; set; } = "";
-    public string NextContext { get; set; } = "";
-}
-
-/// <summary>
-/// 重写后的文本块
-/// </summary>
-public class RewrittenBlock
-{
-    public int Index { get; set; }
-    public string Content { get; set; } = "";
-    public string OriginalContent { get; set; } = "";
-    public double SimilarityScore { get; set; }
-    public DateTime ProcessedTime { get; set; }
-    public string ProcessedBy { get; set; } = "";
-}
